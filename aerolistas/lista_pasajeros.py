@@ -72,98 +72,81 @@ class ListaPasajeros:
     # ✍ TAREA · implementa estos métodos (en este orden te será más fácil)
     # ==========================================================
 
-def esta_vacia(self):
-    return self.head is None
+    def esta_vacia(self):
+            return self.head is None
 
-def longitud(self):
-    return self.cantidad
+    def longitud(self):
+        return self.cantidad
 
-def listar(self):
-    resultado = []
-    actual = self.head
-    while actual is not None:
-        resultado.append(actual.data)
-        actual = actual.next
-    return resultado
+    def listar(self):
+        resultado = []
+        actual = self.head
+        while actual is not None:
+            resultado.append(actual.data)
+            actual = actual.next
+        return resultado
 
-def buscar(self, numero):
-    numero = int(numero)
-    actual = self.head
-    while actual is not None:
-        if int(actual.data["numero"]) == numero:
-            return actual.data
-        actual = actual.next
-    return None
+    def buscar(self, numero):
+        actual = self.head
+        while actual is not None:
+            if actual.data.numero == numero:
+                return actual.data
+            actual = actual.next
+        return None
 
-def buscar_por_asiento(self, asiento):
-    objetivo = str(asiento).strip().upper()
-    actual = self.head
-    while actual is not None:
-        if str(actual.data["asiento"]).strip().upper() == objetivo:
-            return actual.data
-        actual = actual.next
-    return None
+    def buscar_por_asiento(self, asiento):
+        actual = self.head
+        while actual is not None:
+            if actual.data.asiento == asiento:
+                return actual.data
+            actual = actual.next
+        return None
 
-def buscar_por_cedula(self, cedula):
-    objetivo = str(cedula).strip()
-    actual = self.head
-    while actual is not None:
-        if str(actual.data["cedula"]).strip() == objetivo:
-            return actual.data
-        actual = actual.next
-    return None
-    
-def modificar(self, numero, nuevos_datos):
-    numero = int(numero)
-    actual = self.head
-    while actual is not None:
-        if int(actual.data["numero"]) == numero:
-            if "nombre" in nuevos_datos and nuevos_datos["nombre"] is not None:
-                actual.data["nombre"] = nuevos_datos["nombre"]
-            if "edad" in nuevos_datos and nuevos_datos["edad"] is not None:
-                actual.data["edad"] = int(nuevos_datos["edad"])
-            if "asiento" in nuevos_datos and nuevos_datos["asiento"] is not None:
-                actual.data["asiento"] = str(nuevos_datos["asiento"]).strip().upper()
-            return actual.data
-        actual = actual.next
-    return None
+    def buscar_por_cedula(self, cedula):
+        actual = self.head
+        while actual is not None:
+            if actual.data.cedula == cedula:
+                return actual.data
+            actual = actual.next
+        return None
 
-def eliminar(self, numero):
-    numero = int(numero)
-    actual = self.head
-    anterior = None
+    def modificar(self, numero, nuevo_nombre, nueva_edad, nuevo_asiento):
+        pasajero = self.buscar(numero)
+        if pasajero is None:
+            return False
+        pasajero.nombre = nuevo_nombre
+        pasajero.edad = nueva_edad
+        pasajero.asiento = nuevo_asiento
+        return True
 
-    while actual is not None:
-        if int(actual.data["numero"]) == numero:
-            if anterior is None:
-                self.head = actual.next
-            else:
+    def eliminar(self, numero):
+        if self.head is None:
+            return None
+
+        if self.head.data.numero == numero:
+            eliminado = self.head.data
+            self.head = self.head.next
+            self.cantidad = self.cantidad - 1
+            return eliminado
+        anterior = self.head
+        actual = self.head.next
+
+        while actual is not None:
+            if actual.data.numero == numero:
+                eliminado = actual.data
                 anterior.next = actual.next
-            self.cantidad -= 1
-            return actual.data
-        anterior = actual
-        actual = actual.next
-    return None
+                self.cantidad = self.cantidad - 1
+                return eliminado
+            anterior = actual
+            actual = actual.next
+        return None
 
-def filtrar_por_clase(self, clase, filas_ejecutiva=2):
-    if not clase or clase == "Todos":
-        return self.listar()
-
-    filtrados = []
-    actual = self.head
-    while actual is not None:
-        asiento = str(actual.data["asiento"]).strip().upper()
-        digitos = ""
-        for ch in asiento:
-            if ch.isdigit():
-                digitos += ch
-            else:
-                break
-        fila = int(digitos) if digitos else 0
-        clase_actual = "Ejecutiva" if 1 <= fila <= filas_ejecutiva else "Económica"
-
-        if clase_actual.lower() == str(clase).strip().lower():
-            filtrados.append(actual.data)
-        actual = actual.next
-    return filtrados
+    def filtrar_por_clase(self, clase):
+        resultado = []
+        actual = self.head
+        while actual is not None:
+            if actual.data.clase() == clase:
+                resultado.append(actual.data)
+            actual = actual.next
+        return resultado
     
